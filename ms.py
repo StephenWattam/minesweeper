@@ -10,10 +10,10 @@ from ai import MineSweeperAI
 
 board = Board(10, 10, 0.05)
 game = MineSweeperGame(board)
-# ai = MinesweeperAI(game, board)
+ai = MineSweeperAI(game, board)
 
 # --------------
 
-render_interactive_board(board, game)
+render_interactive_board(board, game, ai)
 
 

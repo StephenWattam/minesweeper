@@ -16,7 +16,7 @@ ADJACENCY_COLOURS = [(0, 0, 0), (0, 0, 128), (0, 128, 0), (0, 128, 128), (128, 0
 # FIXME: may vary by platform
 FONT = "dejavusans"
 
-def render_interactive_board(board, game):
+def render_interactive_board(board, game, ai):
 
     pygame.init()
 
@@ -37,6 +37,9 @@ def render_interactive_board(board, game):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            if event.type == pygame.KEYUP:
+                ai.move()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 left, mid, right = pygame.mouse.get_pressed()

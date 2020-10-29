@@ -4,26 +4,25 @@ FLAGGED = "f"
 
 class MineSweeperAI:
 
-    def __init__(game, board):
+    def __init__(self, game, board):
 
         self.game = game
         self.board = board
 
     def move(self):
 
-        prob = [[None] * self.board.width() for _ in self.board.height()]
+        prob = [[None] * self.board.width() for _ in range(self.board.height())]
 
         # Precompute our view of the board, censored according to revealed status
-        cell_locs = [(x, y) for x, y, state in self.board.cell_tuples()]
-        cell_tuples = [(x, y, self._observable_state(x, y)) for x, y in cell_locs]
+        cells = [[self._observable_state(x, y) for x in range(self.board.width())] for y in range(self.board.height())]
 
         # Keep track of minimums
         min_location = (0, 0)
         min_prob = 1
-        for x in range(self.board.width()):
-            for y in range(self.board.height()):
-                # Compute p[bomb] for cell x, y
-                pass
+        for y in range(len(cells)):
+            for x in range(len(cells[y])):
+                print(f"-> {x}, {y} = {cells[y][x]}")
+                #self._prob(x, y, observations)
 
     def _observable_state(self, x, y):
         """Return a flag used for the internal representation of what this AI can see right now,
@@ -39,7 +38,10 @@ class MineSweeperAI:
         # Read number from board
         return self.board.cell(x, y)
 
-    def _prob(self, x, y):
+    def _prob(self, x, y, observations):
         """Look at the information on the screen and identify p[bomb] for this cell"""
+
+
+
 
         pass

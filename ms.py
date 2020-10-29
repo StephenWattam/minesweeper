@@ -8,9 +8,9 @@ from render import render_interactive_board
 from ai import MineSweeperAI
 
 
-board = Board(10, 10, 0.05)
-game = MineSweeperGame(board)
-ai = MineSweeperAI(game, board)
+board = Board(1000, 1000, 0.1)
+game  = MineSweeperGame(board)
+ai    = MineSweeperAI(game, board)
 
 # --------------
 

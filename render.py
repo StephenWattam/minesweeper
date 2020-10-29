@@ -28,8 +28,8 @@ def render_interactive_board(board, game, ai):
     while running:
 
         # Compute sizes of elements on the display for this refresh
-        surface = pygame.display.get_surface() #get the surface of the current active display
-        cell_width = surface.get_width() / board.width()
+        surface     = pygame.display.get_surface() #get the surface of the current active display
+        cell_width  = surface.get_width() / board.width()
         cell_height = surface.get_height() / board.height()
         number_font = pygame.font.SysFont(FONT, int(min(cell_width, cell_height)))
 

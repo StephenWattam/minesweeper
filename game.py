@@ -47,10 +47,18 @@ class MineSweeperGame:
         self._check_win()
 
     def click(self, x, y):
+
+        # Don't permit people to take actions over and over on
+        # the same cell
+        if self.cell_revealed(x, y) or self.cell_flagged(x, y):
+            return
+
         self.moves += 1
 
         # Lose if clicking on a bomb
         if self.board.is_bomb(x, y):
+            self.state[y][x]     = True
+            self.revealed_count += 1
             self.finished = True
             self.won      = False
             return

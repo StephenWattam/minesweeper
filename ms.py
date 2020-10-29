@@ -7,7 +7,7 @@ from game import MineSweeperGame
 from render import render_interactive_board
 
 
-board = Board(10, 10, 0.05)
+board = Board(100, 100, 0.05)
 game = MineSweeperGame(board)
 
 

@@ -62,7 +62,13 @@ def render_interactive_board(board, game):
         # Check if we've won a print a message
         # TODO
         if game.finished:
-            print(f"Game is finished.  Won? {game.won} Moves: {game.moves}")
+            print(f"Game finished.")
+            if game.won:
+                print(f"You won!")
+            else:
+                print(f"You lost.")
+            print(f"Moves: {game.moves}")
+            running = False
 
         # Iterate over cells and render them
         for x, y, state in board.cell_tuples():

@@ -1,13 +1,24 @@
+"""Acts on a minesweeper game automatically when requested.
 
+The structure does not actually separate the AI from the game/board through a standard Player
+interface, meaning the AI can cheat if it wishes.  It doesn't, though.  Honest."""
 
 FLAGGED = "f"
 
 class MineSweeperAI:
+    """An AI for minesweeper.  self-documenting code, innit."""
 
-    def __init__(self, game, board, board_density_threshold=0.2):
+    def __init__(self, game, board_density_threshold=0.2):
+        """Create a new MineSweeperAI to play the game given on the board given.
+
+        Parameters:
+            game: The game object to play
+            board_density_threshold: The proportion (0-1) of the board seen before the AI will use
+                                     observed bombs to estimate remaining bomb probabilities.
+        """
 
         self.game  = game
-        self.board = board
+        self.board = game.board
 
         # Behaviour params
 
@@ -17,6 +28,16 @@ class MineSweeperAI:
 
     @staticmethod
     def _write_with_limit(obj, x, y, val):
+        """Given a 2D array, obj structured such that obj[y][x] accesses row x and column y,
+        write val into the array iff x and y are within the bounds of the array.
+
+        Parameters:
+            obj: The 2D array to write into
+            x: The row offset, 0-based
+            y: The column offset, 0-based
+            val: The value to insert into the array, if in bounds
+        """
+
         if x < 0 or x >= len(obj[0]):
             return
         if y < 0 or y >= len(obj):
@@ -26,6 +47,31 @@ class MineSweeperAI:
 
     @staticmethod
     def _count_adjacent(obj, x, y, condition, skip_centre=True):
+        """Given a 2D array, obj, such that obj[y][x] addresses column y at row x, count all
+        cells such that condition(value) is true for all cells in a ring around x, y.
+
+        This returns not just the count of cells, but also the cell addresses themselves as
+        tuples of (x, y).  If skip_centre is set to True, we'll miss x,y itself.
+
+        Essentially, we run condition like this:
+          condition(obj[y-1][x-1])
+          condition(obj[y-1][x])
+          condition(obj[y-1][x+1])
+          ...
+        and count one if condition(...) is truthy.
+
+        Parameters:
+            obj: The 2D array to write into
+            x: The row offset, 0-based
+            y: The column offset, 0-based
+            condition: A procedure to call with the value of obj[][] surrounding x,y
+            skip_centre: True to avoid counting x,y itself
+
+        Returns:
+            count: A number showing how many times condition was true.  <=8 if skip_centre, else <=9
+            which: A list of (x,y) tuples showing condition(obj[y][x]) == True
+        """
+
         count = 0
         which = []
         for i in [-1, 0, 1]:
@@ -47,7 +93,21 @@ class MineSweeperAI:
         return count, which
 
     def _read_observable_state(self):
-        """Get observable state and basic knowledge of the board"""
+        """Get observable state and basic knowledge of the board.
+
+        The cell list is formatted as in the board class: each entry in the array shows the status
+        of the cell as known on the board.  This may be a number 0-8 showing the number of adjacent
+        bombs, or 'f' if the cell is flagged by the user.  Bombs should never be returned as
+        observing a bomb means the game must be over.
+
+        Knowledge acts as a "todo list", it's a mask showing what the AI knows, vs what it does not.
+        Cells in the knowledge array may be None, indicating total unknown state or a number between
+        0 and 1 reflecting the absolute probability that the cell contains a bomb.
+
+        Returns:
+            cells: A 2D array with the observable state of each cell (see above)
+            knowledge: A 2D array with knowledge about each cell
+        """
 
         # Precompute our view of the board, censored according to revealed status
         cells = [[self._observable_state(x, y) for x in range(self.board.width())] for y in range(self.board.height())]
@@ -256,6 +316,10 @@ class MineSweeperAI:
 
 
     def move(self):
+        """Interface to AI classes, acting as a request to act on the game.
+
+        Because the deterministic solver calls the game class directly, this may actually move
+        more than once."""
 
         # Attempt deterministic actions
         action = self._move_determinstic()
@@ -276,7 +340,15 @@ class MineSweeperAI:
         """Return a flag used for the internal representation of what this AI can see right now,
         including the game hidden state.
 
-        This ensures we don't accidentally cheat by looking at board info later"""
+        This ensures we don't accidentally cheat by looking at board info later.
+
+        Parameters:
+            x: The x coordinate to extract from the board
+            x: The y coordinate to extract from the board
+
+        Returns:
+            The value at x, y, subject to rules allowable for the game given
+        """
 
         if self.game.cell_flagged(x, y):
             return FLAGGED

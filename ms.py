@@ -1,4 +1,4 @@
-
+"""Main entry point for minesweeper game."""
 
 import os, sys
 
@@ -8,15 +8,19 @@ from render import render_interactive_board
 from ai import MineSweeperAI
 
 
-board = Board(100, 100, 0.1)
-game  = MineSweeperGame(board)
-ai    = MineSweeperAI(game, board)
+# ----------------------------------------------------------------------------------
+# Interactive mode!
+#
 
-# --------------
+board = Board(20, 20, 0.05)
+game  = MineSweeperGame(board)
+ai    = MineSweeperAI(game)
 
 render_interactive_board(board, game, ai)
-
 sys.exit(0)
+
+# ----------------------------------------------------------------------------------
+# Batch mode to gather stats.
 
 NUM_GAMES     = 100
 BOARD_WIDTH   = 100
@@ -30,7 +34,7 @@ for i in range(NUM_GAMES):
 
     board = Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_DENSITY)
     game  = MineSweeperGame(board)
-    ai    = MineSweeperAI(game, board)
+    ai    = MineSweeperAI(game)
 
     while not game.finished:
         ai.move()

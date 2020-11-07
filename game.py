@@ -1,11 +1,20 @@
+"""Represents a game played upon a minesweeper board.
+
+Encodes movement rules, and win/lose conditions."""
 
 from enum import Enum
 
 from board import BOMB
 
 class MineSweeperGame:
+    """A game played upon a board."""
 
     def __init__(self, board):
+        """Create a new game for the board given.
+
+        Parameters:
+            board: The Board object to play upon.
+        """
 
         self.board = board
         self.state = [[None
@@ -22,7 +31,11 @@ class MineSweeperGame:
         self.won      = False
 
     def cell_flagged(self, x, y):
-        """Has the cell at x, y been flagged?"""
+        """Has the cell at x, y been flagged?
+
+        Returns:
+            True if the cell at x, y has been flagged by the user already, else False
+        """
 
         return (x, y) in self.flags
 

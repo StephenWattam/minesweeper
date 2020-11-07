@@ -1,4 +1,7 @@
+"""Renders a board/game state, and offers a method to gather input to drive the game.
 
+Uses pygame/SDL to plot the board on a window that is created when render_interactive_board is
+called."""
 
 import pygame
 
@@ -17,11 +20,20 @@ ADJACENCY_COLOURS = [(0, 0, 0), (0, 0, 128), (0, 128, 0), (0, 128, 128), (128, 0
 FONT = "dejavusans"
 
 def render_interactive_board(board, game, ai):
+    """Create a window showing this Minesweeper board, to play this game, using this AI.
+
+    This function returns when the game ends (win or lose)
+
+    Parameters:
+      board (Board): The board to display
+      game (MineSweeperGame): The game in play at the moment.  Controls what is shown to the user.
+      ai (MineSweeperAI): The AI to request actions of when the 'ai key' is pressed.
+    """
 
     pygame.init()
 
     # Set up the drawing window
-    screen = pygame.display.set_mode([1500, 1500], pygame.RESIZABLE)
+    screen = pygame.display.set_mode([1000, 1000], pygame.RESIZABLE)
 
     running = True
     mouse_button_down = None

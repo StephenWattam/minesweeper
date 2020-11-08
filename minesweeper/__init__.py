@@ -41,7 +41,7 @@ def batch():
 
         log_wins.append(game.won)
         log_moves.append(game.moves)
-        print(f"win? {game.won}, moves: {game.moves}")
+        print(f"[{i}/{NUM_GAMES}] win? {game.won}, moves: {game.moves}")
 
     # Print summary
     print(f"Board with {BOARD_WIDTH}x{BOARD_HEIGHT} WxH, mine density={BOARD_DENSITY}")

@@ -6,11 +6,11 @@ This is a quick project I put together in order to build an AI for minesweeper. 
 
 ## Install
 
-    pip install -r requirements.txt
+    pip install .
 
 ## Play
 
-    python ms.py
+    minesweeper
 
 The win/lose state of the game will be printed as the window closes.  This happens so the AI can play without any further interaction.
 

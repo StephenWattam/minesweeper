@@ -4,7 +4,7 @@ Encodes movement rules, and win/lose conditions."""
 
 from enum import Enum
 
-from board import BOMB
+from .board import BOMB
 
 class MineSweeperGame:
     """A game played upon a board."""

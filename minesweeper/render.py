@@ -5,7 +5,7 @@ called."""
 
 import pygame
 
-from board import BOMB
+from .board import BOMB
 
 # Run until the user asks to quit
 HIDDEN_COLOUR   = (128, 128, 128)

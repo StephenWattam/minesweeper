@@ -19,13 +19,12 @@ ADJACENCY_COLOURS = [(0, 0, 0), (0, 0, 128), (0, 128, 0), (0, 128, 128), (128, 0
 # FIXME: may vary by platform
 FONT = "dejavusans"
 
-def render_interactive_board(board, game, ai):
+def render_interactive_board(game, ai):
     """Create a window showing this Minesweeper board, to play this game, using this AI.
 
     This function returns when the game ends (win or lose)
 
     Parameters:
-      board (Board): The board to display
       game (MineSweeperGame): The game in play at the moment.  Controls what is shown to the user.
       ai (MineSweeperAI): The AI to request actions of when the 'ai key' is pressed.
     """
@@ -41,8 +40,8 @@ def render_interactive_board(board, game, ai):
 
         # Compute sizes of elements on the display for this refresh
         surface = pygame.display.get_surface() #get the surface of the current active display
-        cell_width = surface.get_width() / board.width()
-        cell_height = surface.get_height() / board.height()
+        cell_width = surface.get_width() / game.board_width()
+        cell_height = surface.get_height() / game.board_height()
         number_font = pygame.font.SysFont(FONT, int(min(cell_width, cell_height)))
 
         # Did the user click the window close button?
@@ -54,7 +53,7 @@ def render_interactive_board(board, game, ai):
                 ai.move()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                left, mid, right = pygame.mouse.get_pressed()
+                left, _, right = pygame.mouse.get_pressed()
                 if left:
                     mouse_button_down = "left"
                 elif right:
@@ -71,8 +70,8 @@ def render_interactive_board(board, game, ai):
                     game.toggle_flag(cell_x, cell_y)
                 mouse_button_down = None
 
-        # Fill the background with white
-        screen.fill((255, 255, 255))
+        # Fill the background with hidden
+        screen.fill(HIDDEN_COLOUR)
 
         # Check if we've won a print a message
         # TODO
@@ -85,26 +84,25 @@ def render_interactive_board(board, game, ai):
             print(f"Moves: {game.moves}")
             running = False
 
-        # Iterate over cells and render them
-        for x, y, state in board.cell_tuples():
-            cell_revealed = game.cell_revealed(x, y)
+        # Iterate over cells in the game and render them
+        # Plot any flagged cells
+        for x, y in game.flags:
+            cell_rect = pygame.Rect(x * cell_width, y * cell_height, cell_width, cell_height)
+            pygame.draw.rect(screen, FLAG_COLOUR, cell_rect)
+
+        for x, y, state in game.revealed_cell_tuples():
 
             # Cell shading
-            colour = HIDDEN_COLOUR
             number = None
 
-            if game.cell_flagged(x, y):
-                colour = FLAG_COLOUR
+            if state == BOMB:
+                colour = BOMB_COLOUR
+            else:
+                colour = REVEALED_COLOUR
 
-            if cell_revealed:
-                if state == BOMB:
-                    colour = BOMB_COLOUR
-                else:
-                    colour = REVEALED_COLOUR
-
-                # If the state is a certain annotation
-                if state != BOMB and state > 0:
-                    number = number_font.render(str(state), False, ADJACENCY_COLOURS[state])
+            # If the state is a certain annotation
+            if state != BOMB and state > 0:
+                number = number_font.render(str(state), False, ADJACENCY_COLOURS[state])
 
             cell_rect = pygame.Rect(x * cell_width, y * cell_height, cell_width, cell_height)
             pygame.draw.rect(screen, colour, cell_rect)

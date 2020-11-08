@@ -5,6 +5,7 @@ Encodes movement rules, and win/lose conditions."""
 from enum import Enum
 
 from .board import BOMB
+FLAGGED = "f"
 
 class MineSweeperGame:
     """A game played upon a board."""
@@ -132,6 +133,30 @@ class MineSweeperGame:
                 cell_stack.add((x-1, y+1))
                 cell_stack.add((x  , y+1))
                 cell_stack.add((x+1, y+1))
+
+    def board_width(self):
+        return self.board.width()
+
+    def board_height(self):
+        return self.board.height()
+
+    def cell(self, x, y):
+        """Return this game's view of cell x, y."""
+
+        if self.cell_flagged(x, y):
+            return FLAGGED
+        if not self.cell_revealed(x, y):
+            return None
+
+        # Read number from board
+        return self.board.cell(x, y)
+
+    def revealed_cell_tuples(self):
+        tuples = [[(x, y, self.cell(x, y)) for x in range(self.board.width())
+                   if self.cell_revealed(x, y)]
+                   for y in range(self.board.height())]
+        tuples = [item for sublist in tuples for item in sublist]
+        return tuples
 
     def _check_win(self):
         """Scan through the bomb index and ensure all are unrevealed, but

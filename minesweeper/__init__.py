@@ -15,7 +15,7 @@ def interactive():
     game  = MineSweeperGame(board)
     ai    = MineSweeperAI(game)
 
-    render_interactive_board(board, game, ai)
+    render_interactive_board(game, ai)
 
 
 # ----------------------------------------------------------------------------------

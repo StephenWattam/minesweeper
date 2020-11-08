@@ -3,7 +3,7 @@
 The structure does not actually separate the AI from the game/board through a standard Player
 interface, meaning the AI can cheat if it wishes.  It doesn't, though.  Honest."""
 
-FLAGGED = "f"
+from .game import FLAGGED
 
 class MineSweeperAI:
     """An AI for minesweeper.  self-documenting code, innit."""
@@ -18,7 +18,6 @@ class MineSweeperAI:
         """
 
         self.game  = game
-        self.board = game.board
 
         # Behaviour params
 
@@ -110,10 +109,11 @@ class MineSweeperAI:
         """
 
         # Precompute our view of the board, censored according to revealed status
-        cells = [[self._observable_state(x, y) for x in range(self.board.width())] for y in range(self.board.height())]
+        cells = [[self.game.cell(x, y) for x in range(self.game.board_width())] \
+                  for y in range(self.game.board_height())]
 
         # Things we know about the board, p[bomb]
-        knowledge = [[None] * self.board.width() for _ in range(self.board.height())]
+        knowledge = [[None] * self.game.board_width() for _ in range(self.game.board_height())]
 
         # known facts about 0 cells
         for y in range(len(cells)):
@@ -247,7 +247,7 @@ class MineSweeperAI:
                     num_unknown += 1
                 elif cells[y][x] is FLAGGED:
                     num_unknown += 1
-        if num_unknown > 0 and self.board.width() * self.board.height() / (num_unknown + num_flags):
+        if num_unknown > 0 and self.game.board_width() * self.game.board_height() / (num_unknown + num_flags):
             baseline_probability = num_flags / num_unknown
 
         # PASS 1
@@ -334,26 +334,3 @@ class MineSweeperAI:
         # DEBUG
         # for row in knowledge:
         #     print(" ".join([str(x)[0] for x in row]))
-
-
-    def _observable_state(self, x, y):
-        """Return a flag used for the internal representation of what this AI can see right now,
-        including the game hidden state.
-
-        This ensures we don't accidentally cheat by looking at board info later.
-
-        Parameters:
-            x: The x coordinate to extract from the board
-            x: The y coordinate to extract from the board
-
-        Returns:
-            The value at x, y, subject to rules allowable for the game given
-        """
-
-        if self.game.cell_flagged(x, y):
-            return FLAGGED
-        if not self.game.cell_revealed(x, y):
-            return None
-
-        # Read number from board
-        return self.board.cell(x, y)

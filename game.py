@@ -60,6 +60,12 @@ class MineSweeperGame:
         self._check_win()
 
     def click(self, x, y):
+        """Reveal cell at x, y.
+
+        Parameters:
+            x: The row to reveal
+            y: The column to reveal
+        """
 
         # Don't permit people to take actions over and over on
         # the same cell
@@ -91,7 +97,12 @@ class MineSweeperGame:
     def _fill_click(self, init_x, init_y):
         """Fill an area around the clicked area, revealing all cells that have 0 adjacent bombs.
 
-        Iterative to prevent recursion issues with large maps"""
+        Iterative to prevent recursion issues with large maps.
+
+        Parameters:
+            init_x: The initial x-location (row) to start filling from
+            init_y: The initial y-location (column) to start filling from
+        """
 
         # Start looking all around the cell
         cell_stack = set([(init_x, init_y)])
